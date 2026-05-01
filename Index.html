@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zocha — Healthy Food Delivery</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://code.iconify.design/3/3.1.0/iconify.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'sans-serif'] },
+          colors: {
+            brand: { 50:'#ecfdf5',100:'#d1fae5',200:'#a7f3d0',300:'#6ee7b7',400:'#34d399',500:'#10b981',600:'#059669',700:'#047857',800:'#065f46',900:'#064e3b' },
+            warm: { 50:'#fffbeb',100:'#fef3c7',200:'#fde68a',300:'#fcd34d',400:'#fbbf24',500:'#f59e0b',600:'#d97706',700:'#b45309' },
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    * { font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
+    @keyframes fadeInUp { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+    @keyframes typing { 0%,60%,100%{opacity:1} 30%{opacity:0.3} }
+    @keyframes cartPop { 0%,100%{transform:scale(1)} 50%{transform:scale(1.25)} }
+    @keyframes shimmer { 0%{background-position:-200% 0} 100%{background-position:200% 0} }
+    @keyframes slideIn { from{opacity:0;transform:translateX(20px)} to{opacity:1;transform:translateX(0)} }
+    .fade-up { animation: fadeInUp 0.7s ease-out forwards; }
+    .fade-up-d1 { animation: fadeInUp 0.7s 0.1s ease-out forwards; opacity:0; }
+    .fade-up-d2 { animation: fadeInUp 0.7s 0.2s ease-out forwards; opacity:0; }
+    .fade-up-d3 { animation: fadeInUp 0.7s 0.3s ease-out forwards; opacity:0; }
+    .fade-up-d4 { animation: fadeInUp 0.7s 0.4s ease-out forwards; opacity:0; }
+    .float-anim { animation: float 3s ease-in-out infinite; }
+    .cart-pop { animation: cartPop 0.3s ease-out; }
+    .typing-dot:nth-child(1){animation:typing 1.4s infinite 0s}
+    .typing-dot:nth-child(2){animation:typing 1.4s infinite 0.2s}
+    .typing-dot:nth-child(3){animation:typing 1.4s infinite 0.4s}
+    .shimmer-bg { background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.1) 50%, transparent 100%); background-size: 200% 100%; animation: shimmer 2s infinite; }
+    .card-hover { transition: all 0.4s cubic-bezier(0.25,0.46,0.45,0.94); }
+    .card-hover:hover { transform: translateY(-8px); box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15); }
+    .img-zoom { transition: transform 0.5s ease; }
+    .img-zoom:hover { transform: scale(1.1); }
+    ::-webkit-scrollbar{width:8px}
+    ::-webkit-scrollbar-track{background:#f1f5f9}
+    ::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:4px}
+    ::-webkit-scrollbar-thumb:hover{background:#94a3b8}
+    .hero-gradient { background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 30%, #fef3c7 70%, #fffbeb 100%); }
+    .text-gradient { background: linear-gradient(135deg, #059669, #10b981, #f59e0b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .overlay-gradient { background: linear-gradient(to top, rgba(0,0,0,0.65), rgba(0,0,0,0.1), transparent); }
+    input:focus,select:focus,textarea:focus{outline:none;border-color:#10b981;box-shadow:0 0 0 3px rgba(16,185,129,0.15)}
+    .slide-in { animation: slideIn 0.3s ease-out forwards; }
+  </style>
+</head>
+<body class="bg-white text-gray-800 overflow-x-hidden">
+
+  <!-- ANNOUNCEMENT BAR -->
+  <div class="bg-emerald-600 text-white text-center py-2.5 px-4 text-sm font-medium relative overflow-hidden">
+    <div class="shimmer-bg absolute inset-0"></div>
+    <span class="relative z-10">🔥 Limited Time: <strong>20% OFF</strong> on your first order — Use code <span class="font-bold bg-white/20 px-2 py-0.5 rounded">ZOCHA20</span></span>
+  </div>
+
+  <!-- NAVBAR -->
+  <nav id="navbar" class="sticky top-0 z-50 bg-white/90 backdrop-blur-xl border-b border-gray-100 transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-18">
+        <a href="#" class="flex items-center gap-2.5">
+          <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/30">
+            <span class="iconify text-white text-xl" data-icon="lucide:leaf"></span>
+          </div>
+          <span class="font-bold text-xl text-gray-900 tracking-tight">Zo<span class="text-emerald-600">cha</span></span>
+        </a>
+        <div class="hidden lg:flex items-center gap-1">
+          <a href="#home" class="px-4 py-2 text-sm font-medium text-emerald-700 bg-emerald-50 rounded-xl">Home</a>
+          <a href="#menu" class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 rounded-xl transition-all">Menu</a>
+          <a href="#offers" class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 rounded-xl transition-all">Offers</a>
+          <a href="#categories" class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 rounded-xl transition-all">Categories</a>
+          <a href="#delivery" class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 rounded-xl transition-all">Delivery</a>
+          <a href="#team" class="px-4 py-2 text-sm font-medium text-gray-600 hover:text-emerald-600 hover:bg-emerald-50 rounded-xl transition-all">Our Team</a>
+        </div>
+        <div class="flex items-center gap-3">
+          <button onclick="toggleCart()" class="relative p-2.5 rounded-xl hover:bg-emerald-50 transition-all group" aria-label="Cart">
+            <span class="iconify text-gray-600 group-hover:text-emerald-600 text-xl transition-colors" data-icon="lucide:shopping-bag"></span>
+            <span id="cartBadge" class="hidden absolute -top-0.5 -right-0.5 w-5 h-5 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center shadow-lg">0</span>
+          </button>
+          <button onclick="toggleAI()" class="relative p-2.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 transition-all group" aria-label="AI Assistant">
+            <span class="iconify text-emerald-600 text-xl" data-icon="lucide:bot"></span>
+            <span class="absolute -top-0.5 -right-0.5 w-3 h-3 bg-emerald-500 rounded-full border-2 border-white"></span>
+          </button>
+          <button class="hidden sm:flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm px-5 py-2.5 rounded-xl transition-all shadow-lg shadow-emerald-600/25 hover:shadow-emerald-600/40">
+            <span class="iconify text-base" data-icon="lucide:log-in"></span>Sign In
+          </button>
+          <button onclick="toggleMobileMenu()" class="lg:hidden p-2.5 rounded-xl hover:bg-gray-100 transition-all">
+            <span class="iconify text-gray-600 text-xl" data-icon="lucide:menu"></span>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div id="mobileMenu" class="hidden lg:hidden border-t border-gray-100 px-4 py-3 space-y-1 bg-white">
+      <a href="#home" class="block px-4 py-2.5 text-sm font-medium text-emerald-700 bg-emerald-50 rounded-xl">Home</a>
+      <a href="#menu" class="block px-4 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-50 rounded-xl">Menu</a>
+      <a href="#offers" class="block px-4 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-50 rounded-xl">Offers</a>
+      <a href="#categories" class="block px-4 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-50 rounded-xl">Categories</a>
+      <a href="#delivery" class="block px-4 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-50 rounded-xl">Delivery</a>
+      <a href="#team" class="block px-4 py-2.5 text-sm font-medium text-gray-600 hover:bg-gray-50 rounded-xl">Our Team</a>
+    </div>
+  </nav>
+
+  <!-- HERO SECTION -->
+  <section id="home" class="hero-gradient relative overflow-hidden">
+    <div class="absolute top-20 right-10 w-72 h-72 bg-emerald-300/30 rounded-full blur-[80px]"></div>
+    <div class="absolute bottom-10 left-10 w-60 h-60 bg-warm-300/30 rounded-full blur-[80px]"></div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+      <div class="grid lg:grid-cols-2 gap-12 items-center">
+        <div class="space-y-8">
+          <div class="fade-up inline-flex items-center gap-2 bg-white/70 backdrop-blur-sm px-4 py-2 rounded-full border border-emerald-200">
+            <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+            <span class="text-sm font-medium text-emerald-700">Free delivery on orders above $30</span>
+          </div>
+          <h1 class="fade-up-d1 text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-[1.08] tracking-tight text-gray-900">
+            Healthy Eating is an <span class="text-gradient">Important Part</span> of Lifestyle
+          </h1>
+          <p class="fade-up-d2 text-lg text-gray-600 leading-relaxed max-w-lg">
+            Fresh, nutritious meals & artisan baked goods delivered straight to your door. Fuel your body with the best nature has to offer.
+          </p>
+          <div class="fade-up-d3 flex flex-wrap gap-4">
+            <a href="#menu" class="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-base px-8 py-4 rounded-2xl transition-all shadow-xl shadow-emerald-600/30 hover:shadow-emerald-600/50 hover:-translate-y-0.5">
+              <span class="iconify" data-icon="lucide:utensils"></span>Explore Menu
+            </a>
+            <a href="#delivery" class="inline-flex items-center gap-2 bg-white hover:bg-gray-50 text-gray-800 font-semibold text-base px-8 py-4 rounded-2xl transition-all shadow-lg border border-gray-200 hover:-translate-y-0.5">
+              <span class="iconify text-emerald-600" data-icon="lucide:truck"></span>Track Order
+            </a>
+          </div>
+          <div class="fade-up-d4 flex items-center gap-6 pt-2">
+            <div class="flex -space-x-3">
+              <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&h=80&fit=crop&crop=face" class="w-10 h-10 rounded-full border-2 border-white shadow object-cover" alt="">
+              <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop&crop=face" class="w-10 h-10 rounded-full border-2 border-white shadow object-cover" alt="">
+              <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80&h=80&fit=crop&crop=face" class="w-10 h-10 rounded-full border-2 border-white shadow object-cover" alt="">
+              <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=80&h=80&fit=crop&crop=face" class="w-10 h-10 rounded-full border-2 border-white shadow object-cover" alt="">
+            </div>
+            <div>
+              <div class="flex items-center gap-1 text-warm-500">
+                <span class="iconify text-sm" data-icon="lucide:star"></span><span class="iconify text-sm" data-icon="lucide:star"></span><span class="iconify text-sm" data-icon="lucide:star"></span><span class="iconify text-sm" data-icon="lucide:star"></span><span class="iconify text-sm" data-icon="lucide:star"></span>
+              </div>
+              <p class="text-sm text-gray-500 mt-0.5"><strong class="text-gray-700">2,500+</strong> happy customers</p>
+            </div>
+          </div>
+        </div>
+        <div class="relative hidden lg:block">
+          <div class="absolute -inset-4 bg-gradient-to-br from-emerald-200/40 to-warm-200/40 rounded-[3rem] blur-2xl"></div>
+          <div class="relative grid grid-cols-2 gap-4">
+            <div class="space-y-4">
+              <div class="rounded-3xl overflow-hidden shadow-2xl card-hover">
+                <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=500&h=600&fit=crop" alt="Healthy Salad Bowl" class="w-full h-64 object-cover img-zoom">
+              </div>
+              <div class="rounded-3xl overflow-hidden shadow-2xl card-hover mt-8">
+                <img src="https://images.unsplash.com/photo-1555507036-ab1f4038024a?w=500&h=400&fit=crop" alt="Fresh Croissant" class="w-full h-44 object-cover img-zoom">
+              </div>
+            </div>
+            <div class="space-y-4 pt-8">
+              <div class="rounded-3xl overflow-hidden shadow-2xl card-hover">
+                <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500&h=400&fit=crop" alt="Gourmet Burger" class="w-full h-44 object-cover img-zoom">
+              </div>
+              <div class="rounded-3xl overflow-hidden shadow-2xl card-hover">
+                <img src="https://images.unsplash.com/photo-1553530666-ba11a7da3888?w=500&h=600&fit=crop" alt="Berry Smoothie" class="w-full h-64 object-cover img-zoom">
+              </div>
+            </div>
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white rounded-2xl shadow-xl p-4 float-anim z-10">
+              <div class="flex items-center gap-3">
+                <div class="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center">
+                  <span class="iconify text-emerald-600 text-2xl" data-icon="lucide:clock"></span>
+                </div>
+                <div>
+                  <p class="text-xs text-gray-500">Delivery Time</p>
+                  <p class="font-bold text-gray-900">25-35 Min</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS BAR -->
+  <section class="bg-white border-b border-gray-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+        <div class="text-center"><p class="text-3xl font-extrabold text-emerald-600">150+</p><p class="text-sm text-gray-500 mt-1">Menu Items</p></div>
+        <div class="text-center"><p class="text-3xl font-extrabold text-emerald-600">25 Min</p><p class="text-sm text-gray-500 mt-1">Avg Delivery</p></div>
+        <div class="text-center"><p class="text-3xl font-extrabold text-emerald-600">2.5K+</p><p class="text-sm text-gray-500 mt-1">Happy Customers</p></div>
+        <div class="text-center"><p class="text-3xl font-extrabold text-emerald-600">4.9</p><p class="text-sm text-gray-500 mt-1">Average Rating</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CATEGORIES -->
+  <section id="categories" class="py-20 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-14">
+        <span class="inline-block px-4 py-1.5 bg-emerald-100 text-emerald-700 text-xs font-bold uppercase tracking-wider rounded-full mb-4">Browse</span>
+        <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight">Our Categories</h2>
+        <p class="text-gray-500 mt-3 max-w-xl mx-auto">Explore our wide range of freshly prepared categories designed to satisfy every craving</p>
+      </div>
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-5">
+        <div onclick="filterMenu('all')" class="cat-btn group cursor-pointer bg-white rounded-3xl p-6 text-center card-hover shadow-sm border border-gray-100">
+          <div class="w-16 h-16 mx-auto rounded-2xl bg-emerald-50 flex items-center justify-center mb-3 group-hover:bg-emerald-100 transition-colors"><span class="iconify text-emerald-600 text-2xl" data-icon="lucide:grid-3x3"></span></div>
+          <p class="font-semibold text-gray-800 text-sm">All Items</p><p class="text-xs text-gray-400 mt-0.5">150+ items</p>
+        </div>
+        <div onclick="filterMenu('salads')" class="cat-btn group cursor-pointer bg-white rounded-3xl p-6 text-center card-hover shadow-sm border border-gray-100">
+          <div class="w-16 h-16 mx-auto rounded-2xl bg-green-50 flex items-center justify-center mb-3 group-hover:bg-green-100 transition-colors"><span class="iconify text-green-600 text-2xl" data-icon="lucide:salad"></span></div>
+          <p class="font-semibold text-gray-800 text-sm">Salads</p><p class="text-xs text-gray-400 mt-0.5">24 items</p>
+        </div>
+        <div onclick="filterMenu('burgers')" class="cat-btn group cursor-pointer bg-white rounded-3xl p-6 text-center card-hover shadow-sm border border-gray-100">
+          <div class="w-16 h-16 mx-auto rounded-2xl bg-orange-50 flex items-center justify-center mb-3 group-hover:bg-orange-100 transition-colors"><span class="iconify text-orange-600 text-2xl" data-icon="lucide:beef"></span></div>
+          <p class="font-semibold text-gray-800 text-sm">Burgers</p><p class="text-xs text-gray-400 mt-0.5">18 items</p>
+        </div>
+        <div onclick="filterMenu('bakery')" class="cat-btn group cursor-pointer bg-white rounded-3xl p-6 text-center card-hover shadow-sm border border-gray-100">
+          <div class="w-16 h-16 mx-auto rounded-2xl bg-amber-50 flex items-center justify-center mb-3 group-hover:bg-amber-100 transition-colors"><span class="iconify text-amber-600 text-2xl" data-icon="lucide:croissant"></span></div>
+          <p class="font-semibold text-gray-800 text-sm">Bakery</p><p class="text-xs text-gray-400 mt-0.5">36 items</p>
+        </div>
+        <div onclick="filterMenu('drinks')" class="cat-btn group cursor-pointer bg-white rounded-3xl p-6 text-center card-hover shadow-sm border border-gray-100">
+          <div class="w-16 h-16 mx-auto rounded-2xl bg-blue-50 flex items-center justify-center mb-3 group-hover:bg-blue-100 transition-colors"><span class="iconify text-blue-600 text-2xl" data-icon="lucide:cup-soda"></span></div>
+          <p class="font-semibold text-gray-800 text-sm">Drinks</p><p class="text-xs text-gray-400 mt-0.5">30 items</p>
+        </div>
+        <div onclick="filterMenu('coffee')" class="cat-btn group cursor-pointer bg-white rounded-3xl p-6 text-center card-hover shadow-sm border border-gray-100">
+          <div class="w-16 h-16 mx-auto rounded-2xl bg-yellow-50 flex items-center justify-center mb-3 group-hover:bg-yellow-100 transition-colors"><span class="iconify text-yellow-700 text-2xl" data-icon="lucide:coffee"></span></div>
+          <p class="font-semibold text-gray-800 text-sm">Coffee</p><p class="text-xs text-gray-400 mt-0.5">20 items</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MENU SECTION -->
+  <section id="menu" class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
+        <div>
+          <span class="inline-block px-4 py-1.5 bg-emerald-100 text-emerald-700 text-xs font-bold uppercase tracking-wider rounded-full mb-4">Our Menu</span>
+          <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight">Fresh & Delicious</h2>
+          <p class="text-gray-500 mt-2">Handpicked favorites, freshly prepared every day</p>
+        </div>
+        <div class="flex gap-2 flex-wrap">
+          <button onclick="filterMenu('all')" class="filter-btn active px-5 py-2 rounded-xl text-sm font-medium bg-emerald-600 text-white transition-all">All</button>
+          <button onclick="filterMenu('salads')" class="filter-btn px-5 py-2 rounded-xl text-sm font-medium bg-gray-100 text-gray-600 hover:bg-emerald-50 hover:text-emerald-700 transition-all">Salads</button>
+          <button onclick="filterMenu('burgers')" class="filter-btn px-5 py-2 rounded-xl text-sm font-medium bg-gray-100 text-gray-600 hover:bg-emerald-50 hover:text-emerald-700 transition-all">Burgers</button>
+          <button onclick="filterMenu('bakery')" class="filter-btn px-5 py-2 rounded-xl text-sm font-medium bg-gray-100 text-gray-600 hover:bg-emerald-50 hover:text-emerald-700 transition-all">Bakery</button>
+          <button onclick="filterMenu('drinks')" class="filter-btn px-5 py-2 rounded-xl text-sm font-medium bg-gray-100 text-gray-600 hover:bg-emerald-50 hover:text-emerald-700 transition-all">Drinks</button>
+          <button onclick="filterMenu('coffee')" class="filter-btn px-5 py-2 rounded-xl text-sm font-medium bg-gray-100 text-gray-600 hover:bg-emerald-50 hover:text-emerald-700 transition-all">Coffee</button>
+        </div>
+      </div>
+      <div id="menuGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
+    </div>
+  </section>
+
+  <!-- OFFERS SECTION -->
+  <section id="offers" class="py-20 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-14">
+        <span class="inline-block px-4 py-1.5 bg-warm-100 text-warm-700 text-xs font-bold uppercase tracking-wider rounded-full mb-4">Special Deals</span>
+        <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight">Today's Offers</h2>
+        <p class="text-gray-500 mt-3">Don't miss out on these amazing deals</p>
+      </div>
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="relative rounded-3xl overflow-hidden h-80 card-hover shadow-lg group">
+          <img src="https://images.unsplash.com/photo-1546793665-c74683f339c1?w=600&h=400&fit=crop" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="Salad Offer">
+          <div class="absolute inset-0 overlay-gradient"></div>
+          <div class="absolute top-5 left-5 bg-red-500 text-white font-extrabold text-2xl px-4 py-2 rounded-2xl shadow-lg">20% OFF</div>
+          <div class="absolute bottom-5 left-5 right-5 text-white">
+            <h3 class="text-xl font-bold mb-1">Super Salad Bowl</h3>
+            <p class="text-white/80 text-sm mb-3">Fresh greens, quinoa, avocado & tahini</p>
+            <div class="flex items-center gap-3"><span class="text-2xl font-extrabold">$11.99</span><span class="text-lg text-white/50 line-through">$14.99</span></div>
+          </div>
+        </div>
+        <div class="relative rounded-3xl overflow-hidden h-80 card-hover shadow-lg group">
+          <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=600&h=400&fit=crop" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="Coffee Offer">
+          <div class="absolute inset-0 overlay-gradient"></div>
+          <div class="absolute top-5 left-5 bg-warm-500 text-white font-extrabold text-xl px-4 py-2 rounded-2xl shadow-lg">BUY 1 GET 1</div>
+          <div class="absolute bottom-5 left-5 right-5 text-white">
+            <h3 class="text-xl font-bold mb-1">Coffee Combo Deal</h3>
+            <p class="text-white/80 text-sm mb-3">Any 2 specialty coffees for the price of 1</p>
+            <div class="flex items-center gap-3"><span class="text-2xl font-extrabold">$5.99</span><span class="text-lg text-white/50 line-through">$11.98</span></div>
+          </div>
+        </div>
+        <div class="relative rounded-3xl overflow-hidden h-80 card-hover shadow-lg group">
+          <img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?w=600&h=400&fit=crop" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="Bakery Offer">
+          <div class="absolute inset-0 overlay-gradient"></div>
+          <div class="absolute top-5 left-5 bg-emerald-500 text-white font-extrabold text-xl px-4 py-2 rounded-2xl shadow-lg">FREE DELIVERY</div>
+          <div class="absolute bottom-5 left-5 right-5 text-white">
+            <h3 class="text-xl font-bold mb-1">Bakery Family Pack</h3>
+            <p class="text-white/80 text-sm mb-3">6 croissants + 4 muffins + 2 loaves</p>
+            <div class="flex items-center gap-3"><span class="text-2xl font-extrabold">$24.99</span><span class="text-lg text-white/50 line-through">$32.99</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="text-center mt-10">
+        <a href="#menu" class="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm px-8 py-3.5 rounded-xl transition-all shadow-lg shadow-emerald-600/25">Get Started Today! <span class="iconify" data-icon="lucide:arrow-right"></span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS / DELIVERY PROCESS -->
+  <section id="delivery" class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <span class="inline-block px-4 py-1.5 bg-emerald-100 text-emerald-700 text-xs font-bold uppercase tracking-wider rounded-full mb-4">Process</span>
+        <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight">How Delivery Works</h2>
+        <p class="text-gray-500 mt-3 max-w-xl mx-auto">From your screen to your door in four simple steps</p>
+      </div>
+      <div class="grid md:grid-cols-4 gap-8 relative">
+        <div class="hidden md:block absolute top-16 left-[15%] right-[15%] h-0.5 bg-gradient-to-r from-emerald-200 via-emerald-400 to-emerald-200"></div>
+        <div class="text-center relative">
+          <div class="w-16 h-16 mx-auto rounded-2xl bg-emerald-600 text-white flex items-center justify-center text-xl font-extrabold shadow-xl shadow-emerald-600/30 relative z-10 mb-6">01</div>
+          <div class="w-14 h-14 mx-auto rounded-2xl bg-emerald-50 flex items-center justify-center mb-4"><span class="iconify text-emerald-600 text-2xl" data-icon="lucide:search"></span></div>
+          <h3 class="font-bold text-gray-900 text-lg mb-2">Browse Menu</h3>
+          <p class="text-sm text-gray-500 leading-relaxed">Explore our diverse menu of healthy meals, bakery items & beverages</p>
+        </div>
+        <div class="text-center relative">
+          <div class="w-16 h-16 mx-auto rounded-2xl bg-emerald-600 text-white flex items-center justify-center text-xl font-extrabold shadow-xl shadow-emerald-600/30 relative z-10 mb-6">02</div>
+          <div class="w-14 h-14 mx-auto rounded-2xl bg-emerald-50 flex items-center justify-center mb-4"><span class="iconify text-emerald-600 text-2xl" data-icon="lucide:shopping-cart"></span></div>
+          <h3 class="font-bold text-gray-900 text-lg mb-2">Place Order</h3>
+          <p class="text-sm text-gray-500 leading-relaxed">Add items to your cart, customize your order & proceed to checkout</p>
+        </div>
+        <div class="text-center relative">
+          <div class="w-16 h-16 mx-auto rounded-2xl bg-emerald-600 text-white flex items-center justify-center text-xl font-extrabold shadow-xl shadow-emerald-600/30 relative z-10 mb-6">03</div>
+          <div class="w-14 h-14 mx-auto rounded-2xl bg-emerald-50 flex items-center justify-center mb-4"><span class="iconify text-emerald-600 text-2xl" data-icon="lucide:credit-card"></span></div>
+          <h3 class="font-bold text-gray-900 text-lg mb-2">Make Payment</h3>
+          <p class="text-sm text-gray-500 leading-relaxed">Pay securely via card, digital wallet, or cash on delivery</p>
+        </div>
+        <div class="text-center relative">
+          <div class="w-16 h-16 mx-auto rounded-2xl bg-emerald-600 text-white flex items-center justify-center text-xl font-extrabold shadow-xl shadow-emerald-600/30 relative z-10 mb-6">04</div>
+          <div class="w-14 h-14 mx-auto rounded-2xl bg-emerald-50 flex items-center justify-center mb-4"><span class="iconify text-emerald-600 text-2xl" data-icon="lucide:package-check"></span></div>
+          <h3 class="font-bold text-gray-900 text-lg mb-2">Get Delivered</h3>
+          <p class="text-sm text-gray-500 leading-relaxed">Track your order in real-time & receive it at your doorstep</p>
+        </div>
+      </div>
+      <!-- Order Tracker Demo -->
+      <div class="mt-16 bg-gradient-to-br from-emerald-50 to-green-50 rounded-3xl p-8 md:p-12 border border-emerald-100">
+        <h3 class="text-xl font-bold text-gray-900 mb-2">Live Order Tracking</h3>
+        <p class="text-gray-500 text-sm mb-8">See exactly where your order is at every stage</p>
+        <div class="grid md:grid-cols-4 gap-4">
+          <div id="track1" class="track-step bg-white rounded-2xl p-5 border-2 border-emerald-500 shadow-lg shadow-emerald-500/10">
+            <div class="flex items-center gap-3 mb-2"><div class="w-8 h-8 bg-emerald-500 rounded-lg flex items-center justify-center"><span class="iconify text-white text-sm" data-icon="lucide:check"></span></div><span class="font-bold text-emerald-700 text-sm">Confirmed</span></div>
+            <p class="text-xs text-gray-400">Order received & confirmed</p>
+          </div>
+          <div id="track2" class="track-step bg-white rounded-2xl p-5 border-2 border-emerald-500 shadow-lg shadow-emerald-500/10">
+            <div class="flex items-center gap-3 mb-2"><div class="w-8 h-8 bg-emerald-500 rounded-lg flex items-center justify-center"><span class="iconify text-white text-sm" data-icon="lucide:chef-hat"></span></div><span class="font-bold text-emerald-700 text-sm">Preparing</span></div>
+            <p class="text-xs text-gray-400">Chef is preparing your food</p>
+          </div>
+          <div id="track3" class="track-step bg-white rounded-2xl p-5 border-2 border-gray-200">
+            <div class="flex items-center gap-3 mb-2"><div class="w-8 h-8 bg-gray-200 rounded-lg flex items-center justify-center"><span class="iconify text-gray-400 text-sm" data-icon="lucide:bike"></span></div><span class="font-bold text-gray-400 text-sm">On the Way</span></div>
+            <p class="text-xs text-gray-300">Rider is heading to you</p>
+          </div>
+          <div id="track4" class="track-step bg-white rounded-2xl p-5 border-2 border-gray-200">
+            <div class="flex items-center gap-3 mb-2"><div class="w-8 h-8 bg-gray-200 rounded-lg flex items-center justify-center"><span class="iconify text-gray-400 text-sm" data-icon="lucide:home"></span></div><span class="font-bold text-gray-400 text-sm">Delivered</span></div>
+            <p class="text-xs text-gray-300">Enjoy your meal!</p>
+          </div>
+        </div>
+        <div class="mt-6 bg-white rounded-full h-3 overflow-hidden"><div id="trackProgress" class="h-full bg-gradient-to-r from-emerald-400 to-emerald-600 rounded-full transition-all duration-1000" style="width:50%"></div></div>
+        <p class="text-sm text-gray-500 mt-3 text-center">Estimated delivery: <strong class="text-emerald-600">15 minutes</strong></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- PAYMENT METHODS -->
+  <section class="py-20 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid lg:grid-cols-2 gap-12 items-center">
+        <div>
+          <span class="inline-block px-4 py-1.5 bg-blue-100 text-blue-700 text-xs font-bold uppercase tracking-wider rounded-full mb-4">Secure Payments</span>
+          <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight mb-4">Multiple Payment Options</h2>
+          <p class="text-gray-500 leading-relaxed mb-8">Choose the payment method that works best for you. All transactions are encrypted and secure.</p>
+          <div class="space-y-4">
+            <div class="flex items-center gap-4 bg-white rounded-2xl p-4 border border-gray-100 card-hover">
+              <div class="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center flex-shrink-0"><span class="iconify text-blue-600 text-xl" data-icon="lucide:credit-card"></span></div>
+              <div class="flex-1"><p class="font-semibold text-gray-900 text-sm">Credit / Debit Card</p><p class="text-xs text-gray-400">Visa, Mastercard, Amex accepted</p></div>
+              <span class="iconify text-emerald-500" data-icon="lucide:check-circle"></span>
+            </div>
+            <div class="flex items-center gap-4 bg-white rounded-2xl p-4 border border-gray-100 card-hover">
+              <div class="w-12 h-12 bg-purple-50 rounded-xl flex items-center justify-center flex-shrink-0"><span class="iconify text-purple-600 text-xl" data-icon="lucide:smartphone"></span></div>
+              <div class="flex-1"><p class="font-semibold text-gray-900 text-sm">Digital Wallets</p><p class="text-xs text-gray-400">Apple Pay, Google Pay, PayPal</p></div>
+              <span class="iconify text-emerald-500" data-icon="lucide:check-circle"></span>
+            </div>
+            <div class="flex items-center gap-4 bg-white rounded-2xl p-4 border border-gray-100 card-hover">
+              <div class="w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center flex-shrink-0"><span class="iconify text-green-600 text-xl" data-icon="lucide:banknote"></span></div>
+              <div class="flex-1"><p class="font-semibold text-gray-900 text-sm">Cash on Delivery</p><p class="text-xs text-gray-400">Pay when your order arrives</p></div>
+              <span class="iconify text-emerald-500" data-icon="lucide:check-circle"></span>
+            </div>
+            <div class="flex items-center gap-4 bg-white rounded-2xl p-4 border border-gray-100 card-hover">
+              <div class="w-12 h-12 bg-warm-50 rounded-xl flex items-center justify-center flex-shrink-0"><span class="iconify text-warm-600 text-xl" data-icon="lucide:gift"></span></div>
+              <div class="flex-1"><p class="font-semibold text-gray-900 text-sm">Gift Cards & Promo Codes</p><p class="text-xs text-gray-400">Redeem at checkout</p></div>
+              <span class="iconify text-emerald-500" data-icon="lucide:check-circle"></span>
+            </div>
+          </div>
+        </div>
+        <div class="relative">
+          <div class="absolute -inset-4 bg-gradient-to-br from-emerald-100/50 to-blue-100/50 rounded-[3rem] blur-2xl"></div>
+          <div class="relative bg-white rounded-3xl shadow-2xl p-8 border border-gray-100">
+            <div class="flex items-center gap-3 mb-6">
+              <div class="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center"><span class="iconify text-emerald-600 text-lg" data-icon="lucide:shield-check"></span></div>
+              <div><p class="font-bold text-gray-900 text-sm">Secure Checkout</p><p class="text-xs text-gray-400">256-bit SSL encrypted</p></div>
+            </div>
+            <div class="space-y-4">
+              <div><label class="text-xs font-medium text-gray-500 mb-1 block">Card Number</label><input type="text" value="4532 •••• •••• 7891" class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm font-mono bg-gray-50" readonly></div>
+              <div class="grid grid-cols-2 gap-4">
+                <div><label class="text-xs font-medium text-gray-500 mb-1 block">Expiry</label><input type="text" value="12/28" class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm font-mono bg-gray-50" readonly></div>
+                <div><label class="text-xs font-medium text-gray-500 mb-1 block">CVV</label><input type="text" value="•••" class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm font-mono bg-gray-50" readonly></div>
+              </div>
+              <div class="border-t border-dashed border-gray-200 pt-4 mt-4">
+                <div class="flex justify-between text-sm mb-1"><span class="text-gray-500">Subtotal</span><span class="font-medium">$32.97</span></div>
+                <div class="flex justify-between text-sm mb-1"><span class="text-gray-500">Delivery Fee</span><span class="font-medium text-emerald-600">Free</span></div>
+                <div class="flex justify-between text-sm mb-1"><span class="text-gray-500">Tax</span><span class="font-medium">$2.64</span></div>
+                <div class="flex justify-between text-base font-bold mt-3 pt-3 border-t border-gray-200"><span>Total</span><span class="text-emerald-600">$35.61</span></div>
+              </div>
+              <button onclick="processPayment()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 rounded-xl transition-all shadow-lg shadow-emerald-600/25 flex items-center justify-center gap-2"><span class="iconify" data-icon="lucide:lock"></span>Pay $35.61</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MEET OUR TEAM -->
+  <section id="team" class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-14">
+        <span class="inline-block px-4 py-1.5 bg-emerald-100 text-emerald-700 text-xs font-bold uppercase tracking-wider rounded-full mb-4">Our People</span>
+        <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight">Meet Our Best Team</h2>
+        <p class="text-gray-500 mt-3 max-w-xl mx-auto">The passionate people behind every delicious meal and perfect cup</p>
+      </div>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div class="group text-center card-hover">
+          <div class="relative w-48 h-48 mx-auto mb-5 rounded-3xl overflow-hidden shadow-xl">
+            <img src="https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=400&h=400&fit=crop&crop=face" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Chef Maria">
+            <div class="absolute inset-0 bg-emerald-600/0 group-hover:bg-emerald-600/20 transition-colors flex items-center justify-center">
+              <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                <a href="#" class="w-9 h-9 bg-white rounded-full flex items-center justify-center shadow-lg hover:bg-emerald-50"><span class="iconify text-gray-700 text-sm" data-icon="lucide:instagram"></span></a>
+                <a href="#" class="w-9 h-9 bg-white rounded-full flex items-center justify-center shadow-lg hover:bg-emerald-50"><span class="iconify text-gray-700 text-sm" data-icon="lucide:linkedin"></span></a>
+              </div>
+            </div>
+          </div>
+          <h3 class="font-bold text-gray-900 text-lg">Maria Chen</h3><p class="text-emerald-600 text-sm font-medium">Head Chef</p><p class="text-gray-400 text-xs mt-1">12 years experience</p>
+        </div>
+        <div class="group text-center card-hover">
+          <div class="relative w-48 h-48 mx-auto mb-5 rounded-3xl overflow-hidden shadow-xl">
+            <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&h=400&fit=crop&crop=face" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Barista James">
+            <div class="absolute inset-0 bg-emerald-600/0 group-hover:bg-emerald-600/20 transition-colors flex items-center justify-center">
+              <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                <a href="#" class="w-9 h-9 bg-white rounded-full flex items-center justify-center shadow-lg hover:bg-emerald-50"><span class="iconify text-gray-700 text-sm" data-icon="lucide:instagram"></span></a>
+                <a href="#" class="w-9 h-9 bg-white rounded-full flex items-center justify-center shadow-lg hover:bg-emerald-50"><span class="iconify text-gray-700 text-sm" data-icon="lucide:linkedin"></span></a>
+              </div>
+            </div>
+          </div>
+          <h3 class="font-bold text-gray-900 text-lg">James Walker</h3><p class="text-emerald-600 text-sm font-medium">Master Barista</p><p class="text-gray-400 text-xs mt-1">Latte Art Champion</p>
+        </div>
+        <div class="group text-center card-hover">
+          <div class="relative w-48 h-48 mx-auto mb-5 rounded-3xl overflow-hidden shadow-xl">
+            <img src="https://images.unsplash.com/photo-1594744803329-e58b31de8bf5?w=400&h=400&fit=crop&crop=face" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Baker Emma">
+            <div class="absolute inset-0 bg-emerald-600/0 group-hover:bg-emerald-600/20 transition-colors flex items-center justify-center">
+              <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                <a href="#" class="w-9 h-9 bg-white rounded-full flex items-center justify-center shadow-lg hover:bg-emerald-50"><span class="iconify text-gray-700 text-sm" data-icon="lucide:instagram"></span></a>
+                <a href="#" class="w-9 h-9 bg-white rounded-full flex items-center justify-center shadow-lg hover:bg-emerald-50"><span class="iconify text-gray-700 text-sm" data-icon="lucide:linkedin"></span></a>
+              </div>
+            </div>
+          </div>
+          <h3 class="font-bold text-gray-900 text-lg">Emma Rodriguez</h3><p class="text-emerald-600 text-sm font-medium">Head Baker</p><p class="text-gray-400 text-xs mt-1">Pastry specialist</p>
+        </div>
+        <div class="group text-center card-hover">
+          <div class="relative w-48 h-48 mx-auto mb-5 rounded-3xl overflow-hidden shadow-xl">
+            <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop&crop=face" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" alt="Manager David">
+            <div class="absolute inset-0 bg-emerald-600/0 group-hover:bg-emerald-600/20 transition-colors flex items-center justify-center">
+              <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                <a href="#" class="w-9 h-9 bg-white rounded-full flex items-center justify-center shadow-lg hover:bg-emerald-50"><span class="iconify text-gray-700 text-sm" data-icon="lucide:instagram"></span></a>
+                <a href="#" class="w-9 h-9 bg-white rounded-full flex items-center justify-center shadow-lg hover:bg-emerald-50"><span class="iconify text-gray-700 text-sm" data-icon="lucide:linkedin"></span></a>
+              </div>
+            </div>
+          </div>
+          <h3 class="font-bold text-gray-900 text-lg">David Kim</h3><p class="text-emerald-600 text-sm font-medium">Operations Lead</p><p class="text-gray-400 text-xs mt-1">Logistics expert</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- REVIEWS -->
+  <section id="reviews" class="py-20 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-14">
+        <span class="inline-block px-4 py-1.5 bg-warm-100 text-warm-700 text-xs font-bold uppercase tracking-wider rounded-full mb-4">Testimonials</span>
+        <h2 class="text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight">What Our Customers Say</h2>
+      </div>
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 card-hover">
+          <div class="flex items-center gap-1 text-warm-400 mb-4"><span class="iconify" data-icon="lucide:star"></span><span class="iconify" data-icon="lucide:star"></span><span class="iconify" data-icon="lucide:star"></span><span class="iconify" data-icon="lucide:star"></span><span class="iconify" data-icon="lucide:star"></span></div>
+          <p class="text-gray-600 text-sm leading-relaxed mb-6">"The freshest salads I've ever had delivered! Everything arrives perfectly crisp and the portions are generous. Absolutely love the Caesar Bowl from Zocha."</p>
+          <div class="flex items-center gap-3"><img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&h=80&fit=crop&crop=face" class="w-10 h-10 rounded-full object-cover" alt=""><div><p class="font-semibold text-gray-900 text-sm">Sarah Mitchell</p><p class="text-xs text-gray-400">Regular Customer</p></div></div>
+        </div>
+        <div class="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 card-hover">
+          <div class="flex items-center gap-1 text-warm-400 mb-4"><span class="iconify" data-icon="lucide:star"></span><span class="iconify" data-icon="lucide:star"></span><span class="iconify" data-icon="lucide:star"></span><span class="iconify" data-icon="lucide:star"></span><span class="iconify" data-icon="lucide:star"></span></div>
+          <p class="text-gray-600 text-sm leading-relaxed mb-6">"Their croissants are literally the best in the city. Flaky, buttery perfection every single time. The Zocha AI chatbot helped me find exactly what I wanted!"</p>
+          <div class="flex items-center gap-3"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop&crop=face" class="w-10 h-10 rounded-full object-cover" alt=""><div><p class="font-semibold text-gray-900 text-sm">Alex Thompson</p><p class="text-xs text-gray-400">Bakery Lover</p></div></div>
+        </div>
+        <div class="bg-white rounded-3xl p-8 shadow-sm border border-gray-100 card-hover">
+          <div class="flex items-center gap-1 text-warm-400 mb-4"><span class="iconify" data-icon="lucide:star"></span><span class="iconify" data-icon="lucide:star"></span><span class="iconify" data-icon="lucide:star"></span><span class="iconify" data-icon="lucide:star"></span><span class="iconify" data-icon="lucide:star"></span></div>
+          <p class="text-gray-600 text-sm leading-relaxed mb-6">"Super fast delivery and the order tracking is amazing. I can see exactly when my coffee will arrive. Zocha's whole experience feels so premium."</p>
+          <div class="flex items-center gap-3"><img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80&h=80&fit=crop&crop=face" class="w-10 h-10 rounded-full object-cover" alt=""><div><p class="font-semibold text-gray-900 text-sm">Priya Sharma</p><p class="text-xs text-gray-400">Coffee Enthusiast</p></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- APP CTA -->
+  <section class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="relative bg-gradient-to-br from-emerald-600 to-emerald-800 rounded-[2rem] overflow-hidden p-10 md:p-16">
+        <div class="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2"></div>
+        <div class="absolute bottom-0 left-0 w-64 h-64 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/2"></div>
+        <div class="relative grid md:grid-cols-2 gap-10 items-center">
+          <div class="text-white">
+            <h2 class="text-3xl md:text-4xl font-extrabold mb-4">Get the Zocha App</h2>
+            <p class="text-emerald-100 leading-relaxed mb-8">Order faster, track easier, and get exclusive app-only deals. Available on iOS and Android.</p>
+            <div class="flex flex-wrap gap-4">
+              <button class="flex items-center gap-3 bg-black/30 hover:bg-black/50 backdrop-blur-sm text-white px-6 py-3 rounded-xl transition-all border border-white/10">
+                <span class="iconify text-2xl" data-icon="lucide:apple"></span>
+                <div class="text-left"><p class="text-[10px] text-emerald-200">Download on the</p><p class="font-bold text-sm">App Store</p></div>
+              </button>
+              <button class="flex items-center gap-3 bg-black/30 hover:bg-black/50 backdrop-blur-sm text-white px-6 py-3 rounded-xl transition-all border border-white/10">
+                <span class="iconify text-2xl" data-icon="lucide:play"></span>
+                <div class="text-left"><p class="text-[10px] text-emerald-200">Get it on</p><p class="font-bold text-sm">Google Play</p></div>
+              </button>
+            </div>
+          </div>
+          <div class="flex justify-center">
+            <div class="relative">
+              <div class="w-56 h-96 bg-gray-900 rounded-[2.5rem] border-4 border-gray-700 shadow-2xl overflow-hidden">
+                <div class="w-full h-full bg-gradient-to-b from-emerald-400 to-emerald-700 flex flex-col items-center justify-center p-6 text-center">
+                  <span class="iconify text-white text-5xl mb-3" data-icon="lucide:leaf"></span>
+                  <p class="text-white font-bold text-lg">Zocha</p>
+                  <p class="text-emerald-200 text-xs mt-1">Healthy food delivery</p>
+                  <div class="mt-6 w-full space-y-2">
+                    <div class="h-2 bg-white/20 rounded-full"><div class="h-2 bg-white rounded-full w-3/4"></div></div>
+                    <div class="h-2 bg-white/20 rounded-full"><div class="h-2 bg-white rounded-full w-1/2"></div></div>
+                  </div>
+                </div>
+              </div>
+              <div class="absolute -bottom-4 left-1/2 -translate-x-1/2 w-48 h-24 bg-emerald-500/20 rounded-full blur-xl"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="bg-gray-900 text-gray-400 pt-16 pb-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
+        <div>
+          <div class="flex items-center gap-2.5 mb-5">
+            <div class="w-10 h-10 rounded-2xl bg-emerald-500/20 flex items-center justify-center"><span class="iconify text-emerald-400 text-xl" data-icon="lucide:leaf"></span></div>
+            <span class="font-bold text-xl text-white">Zo<span class="text-emerald-400">cha</span></span>
+          </div>
+          <p class="text-sm leading-relaxed mb-5">Fresh, healthy meals & artisan bakery items delivered to your doorstep. Made with love, delivered with care.</p>
+          <div class="flex gap-3">
+            <a href="#" class="w-10 h-10 bg-gray-800 hover:bg-emerald-600 rounded-xl flex items-center justify-center transition-colors"><span class="iconify text-sm" data-icon="lucide:instagram"></span></a>
+            <a href="#" class="w-10 h-10 bg-gray-800 hover:bg-emerald-600 rounded-xl flex items-center justify-center transition-colors"><span class="iconify text-sm" data-icon="lucide:facebook"></span></a>
+            <a href="#" class="w-10 h-10 bg-gray-800 hover:bg-emerald-600 rounded-xl flex items-center justify-center transition-colors"><span class="iconify text-sm" data-icon="lucide:twitter"></span></a>
+            <a href="#" class="w-10 h-10 bg-gray-800 hover:bg-emerald-600 rounded-xl flex items-center justify-center transition-colors"><span class="iconify text-sm" data-icon="lucide:youtube"></span></a>
+          </div>
+        </div>
+        <div>
+          <h4 class="font-bold text-white mb-5">Quick Links</h4>
+          <ul class="space-y-3 text-sm"><li><a href="#menu" class="hover:text-emerald-400 transition-colors">Our Menu</a></li><li><a href="#offers" class="hover:text-emerald-400 transition-colors">Special Offers</a></li><li><a href="#delivery" class="hover:text-emerald-400 transition-colors">Delivery Info</a></li><li><a href="#team" class="hover:text-emerald-400 transition-colors">Our Team</a></li><li><a href="#" class="hover:text-emerald-400 transition-colors">Careers</a></li></ul>
+        </div>
+        <div>
+          <h4 class="font-bold text-white mb-5">Support</h4>
+          <ul class="space-y-3 text-sm"><li><a href="#" class="hover:text-emerald-400 transition-colors">Help Center</a></li><li><a href="#" class="hover:text-emerald-400 transition-colors">Contact Us</a></li><li><a href="#" class="hover:text-emerald-400 transition-colors">Privacy Policy</a></li><li><a href="#" class="hover:text-emerald-400 transition-colors">Terms of Service</a></li><li><a href="#" class="hover:text-emerald-400 transition-colors">Refund Policy</a></li></ul>
+        </div>
+        <div>
+          <h4 class="font-bold text-white mb-5">Contact</h4>
+          <ul class="space-y-4 text-sm">
+            <li class="flex items-start gap-3"><span class="iconify text-emerald-400 mt-0.5" data-icon="lucide:map-pin"></span><span>123 Healthy Street, Food District, NY 10001</span></li>
+            <li class="flex items-center gap-3"><span class="iconify text-emerald-400" data-icon="lucide:phone"></span><span>+1 (555) 123-4567</span></li>
+            <li class="flex items-center gap-3"><span class="iconify text-emerald-400" data-icon="lucide:mail"></span><span>hello@zocha.com</span></li>
+            <li class="flex items-center gap-3"><span class="iconify text-emerald-400" data-icon="lucide:clock"></span><span>Daily: 6AM - 11PM</span></li>
+          </ul>
+        </div>
+      </div>
+      <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+        <p class="text-sm">&copy; 2025 Zocha. All rights reserved.</p>
+        <div class="flex items-center gap-4 text-sm"><span class="flex items-center gap-1.5"><span class="iconify text-emerald-400" data-icon="lucide:shield-check"></span> SSL Secured</span><span class="flex items-center gap-1.5"><span class="iconify text-emerald-400" data-icon="lucide:lock"></span> Encrypted</span></div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- CART SIDEBAR -->
+  <div id="cartOverlay" class="hidden fixed inset-0 bg-black/40 z-[60] backdrop-blur-sm" onclick="toggleCart()"></div>
+  <div id="cartSidebar" class="fixed top-0 right-0 h-full w-full max-w-md bg-white z-[70] shadow-2xl transform translate-x-full transition-transform duration-300 flex flex-col">
+    <div class="p-6 border-b border-gray-100 flex items-center justify-between flex-shrink-0">
+      <div class="flex items-center gap-3"><div class="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center"><span class="iconify text-emerald-600 text-xl" data-icon="lucide:shopping-bag"></span></div><div><h3 class="font-bold text-gray-900">Your Cart</h3><p id="cartCount" class="text-xs text-gray-400">0 items</p></div></div>
+      <button onclick="toggleCart()" class="p-2 hover:bg-gray-100 rounded-xl transition-colors"><span class="iconify text-gray-500 text-xl" data-icon="lucide:x"></span></button>
+    </div>
+    <div id="cartItems" class="flex-1 overflow-y-auto p-6 space-y-4">
+      <div id="emptyCart" class="flex flex-col items-center justify-center h-full text-center">
+        <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-4"><span class="iconify text-gray-300 text-4xl" data-icon="lucide:shopping-bag"></span></div>
+        <p class="font-semibold text-gray-400 mb-1">Your cart is empty</p><p class="text-sm text-gray-300">Add some delicious items!</p>
+      </div>
+    </div>
+    <div id="cartFooter" class="hidden border-t border-gray-100 p-6 flex-shrink-0 space-y-4">
+      <div class="space-y-2">
+        <div class="flex justify-between text-sm"><span class="text-gray-500">Subtotal</span><span id="cartSubtotal" class="font-medium">$0.00</span></div>
+        <div class="flex justify-between text-sm"><span class="text-gray-500">Delivery</span><span id="cartDelivery" class="font-medium text-emerald-600">Free</span></div>
+        <div class="flex justify-between text-base font-bold pt-2 border-t border-gray-100"><span>Total</span><span id="cartTotal" class="text-emerald-600">$0.00</span></div>
+      </div>
+      <div class="flex gap-2"><input id="promoInput" type="text" placeholder="Promo code" class="flex-1 px-4 py-2.5 rounded-xl border border-gray-200 text-sm"><button onclick="applyPromo()" class="px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium text-sm rounded-xl transition-colors">Apply</button></div>
+      <button onclick="openCheckout()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 rounded-xl transition-all shadow-lg shadow-emerald-600/25 flex items-center justify-center gap-2">Proceed to Checkout <span class="iconify" data-icon="lucide:arrow-right"></span></button>
+    </div>
+  </div>
+
+  <!-- CHECKOUT MODAL -->
+  <div id="checkoutModal" class="hidden fixed inset-0 z-[80] flex items-center justify-center p-4">
+    <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="closeCheckout()"></div>
+    <div class="relative bg-white rounded-3xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+      <div class="p-6 border-b border-gray-100 flex items-center justify-between sticky top-0 bg-white rounded-t-3xl z-10"><h3 class="font-bold text-gray-900 text-lg">Checkout</h3><button onclick="closeCheckout()" class="p-2 hover:bg-gray-100 rounded-xl"><span class="iconify text-gray-500" data-icon="lucide:x"></span></button></div>
+      <div id="checkoutStep1" class="p-6">
+        <div class="flex items-center gap-2 mb-6"><span class="w-7 h-7 bg-emerald-600 text-white text-xs font-bold rounded-full flex items-center justify-center">1</span><span class="font-semibold text-gray-900 text-sm">Delivery Address</span></div>
+        <div class="space-y-4">
+          <input type="text" placeholder="Full Name" class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm">
+          <input type="text" placeholder="Phone Number" class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm">
+          <textarea placeholder="Delivery Address" rows="3" class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm resize-none"></textarea>
+          <textarea placeholder="Delivery Instructions (optional)" rows="2" class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm resize-none"></textarea>
+        </div>
+        <button onclick="goToStep(2)" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 rounded-xl mt-6 transition-all flex items-center justify-center gap-2">Continue to Payment <span class="iconify" data-icon="lucide:arrow-right"></span></button>
+      </div>
+      <div id="checkoutStep2" class="hidden p-6">
+        <div class="flex items-center gap-2 mb-6"><span class="w-7 h-7 bg-emerald-600 text-white text-xs font-bold rounded-full flex items-center justify-center">2</span><span class="font-semibold text-gray-900 text-sm">Payment Method</span></div>
+        <div class="space-y-3">
+          <label class="flex items-center gap-4 p-4 rounded-2xl border-2 border-emerald-500 bg-emerald-50 cursor-pointer"><input type="radio" name="payment" value="card" checked class="accent-emerald-600"><span class="iconify text-blue-600 text-xl" data-icon="lucide:credit-card"></span><div><p class="font-semibold text-sm text-gray-900">Credit/Debit Card</p><p class="text-xs text-gray-400">Visa, Mastercard, Amex</p></div></label>
+          <label class="flex items-center gap-4 p-4 rounded-2xl border-2 border-gray-200 cursor-pointer hover:border-emerald-300 transition-colors"><input type="radio" name="payment" value="wallet" class="accent-emerald-600"><span class="iconify text-purple-600 text-xl" data-icon="lucide:smartphone"></span><div><p class="font-semibold text-sm text-gray-900">Digital Wallet</p><p class="text-xs text-gray-400">Apple Pay, Google Pay</p></div></label>
+          <label class="flex items-center gap-4 p-4 rounded-2xl border-2 border-gray-200 cursor-pointer hover:border-emerald-300 transition-colors"><input type="radio" name="payment" value="cash" class="accent-emerald-600"><span class="iconify text-green-600 text-xl" data-icon="lucide:banknote"></span><div><p class="font-semibold text-sm text-gray-900">Cash on Delivery</p><p class="text-xs text-gray-400">Pay when order arrives</p></div></label>
+        </div>
+        <div id="cardFields" class="mt-5 space-y-3 p-4 bg-gray-50 rounded-2xl">
+          <input type="text" placeholder="Card Number" class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm">
+          <div class="grid grid-cols-2 gap-3"><input type="text" placeholder="MM/YY" class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm"><input type="text" placeholder="CVV" class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm"></div>
+          <input type="text" placeholder="Name on Card" class="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm">
+        </div>
+        <div class="flex gap-3 mt-6">
+          <button onclick="goToStep(1)" class="flex-1 py-3.5 rounded-xl border border-gray-200 text-gray-600 font-semibold text-sm hover:bg-gray-50 transition-colors">Back</button>
+          <button onclick="placeOrder()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 rounded-xl transition-all flex items-center justify-center gap-2"><span class="iconify" data-icon="lucide:lock"></span> Place Order</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ORDER SUCCESS MODAL -->
+  <div id="successModal" class="hidden fixed inset-0 z-[90] flex items-center justify-center p-4">
+    <div class="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
+    <div class="relative bg-white rounded-3xl shadow-2xl w-full max-w-sm p-10 text-center">
+      <div class="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6"><span class="iconify text-emerald-600 text-4xl" data-icon="lucide:check-circle"></span></div>
+      <h3 class="text-2xl font-extrabold text-gray-900 mb-2">Order Placed! 🎉</h3>
+      <p class="text-gray-500 text-sm mb-2">Your order #<span id="orderNumber">ZC-2847</span> has been confirmed</p>
+      <p class="text-gray-400 text-sm mb-8">Estimated delivery: <strong class="text-emerald-600">25-35 minutes</strong></p>
+      <div class="space-y-3">
+        <button onclick="closeSuccess()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 rounded-xl transition-all">Track Order</button>
+        <button onclick="closeSuccess()" class="w-full py-3.5 rounded-xl border border-gray-200 text-gray-600 font-semibold text-sm hover:bg-gray-50 transition-colors">Back to Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI ASSISTANT -->
+  <div id="aiOverlay" class="hidden fixed inset-0 bg-black/30 z-[80] backdrop-blur-sm" onclick="toggleAI()"></div>
+  <div id="aiPanel" class="fixed bottom-6 right-6 w-[380px] max-w-[calc(100vw-3rem)] h-[550px] max-h-[calc(100vh-6rem)] bg-white rounded-3xl shadow-2xl z-[90] flex flex-col transform translate-y-[120%] scale-95 transition-all duration-300 origin-bottom-right border border-gray-200 overflow-hidden">
+    <div class="bg-gradient-to-r from-emerald-600 to-emerald-700 p-5 flex-shrink-0">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3"><div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center"><span class="iconify text-white text-xl" data-icon="lucide:bot"></span></div><div><h3 class="font-bold text-white text-sm">Zocha AI</h3><div class="flex items-center gap-1.5"><span class="w-2 h-2 bg-emerald-300 rounded-full animate-pulse"></span><span class="text-emerald-100 text-xs">Online • Ready to help</span></div></div></div>
+        <button onclick="toggleAI()" class="p-1.5 hover:bg-white/10 rounded-lg transition-colors"><span class="iconify text-white/80 text-lg" data-icon="lucide:x"></span></button>
+      </div>
+    </div>
+    <div id="aiMessages" class="flex-1 overflow-y-auto p-5 space-y-4"></div>
+    <div class="p-4 border-t border-gray-100 flex-shrink-0 bg-gray-50">
+      <div class="flex gap-2"><input id="aiInput" type="text" placeholder="Ask me anything..." class="flex-1 px-4 py-2.5 rounded-xl border border-gray-200 text-sm bg-white" onkeydown="if(event.key==='Enter')sendAI()"><button onclick="sendAI()" class="w-10 h-10 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl flex items-center justify-center transition-colors flex-shrink-0"><span class="iconify text-lg" data-icon="lucide:send"></span></button></div>
+      <div class="flex gap-2 mt-2 overflow-x-auto pb-1">
+        <button onclick="quickAI('What do you recommend?')" class="flex-shrink-0 px-3 py-1 bg-white border border-gray-200 rounded-full text-xs text-gray-500 hover:border-emerald-300 hover:text-emerald-700 transition-colors">Recommendations</button>
+        <button onclick="quickAI('Delivery info')" class="flex-shrink-0 px-3 py-1 bg-white border border-gray-200 rounded-full text-xs text-gray-500 hover:border-emerald-300 hover:text-emerald-700 transition-colors">Delivery info</button>
+        <button onclick="quickAI('Any vegan options?')" class="flex-shrink-0 px-3 py-1 bg-white border border-gray-200 rounded-full text-xs text-gray-500 hover:border-emerald-300 hover:text-emerald-700 transition-colors">Vegan options</button>
+        <button onclick="quickAI('Apply promo code')" class="flex-shrink-0 px-3 py-1 bg-white border border-gray-200 rounded-full text-xs text-gray-500 hover:border-emerald-300 hover:text-emerald-700 transition-colors">Promo code</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div id="toast" class="fixed top-24 right-6 z-[100] transform translate-x-[120%] transition-transform duration-300">
+    <div class="bg-white rounded-2xl shadow-2xl border border-gray-100 p-4 flex items-center gap-3 min-w-[280px]">
+      <div id="toastIcon" class="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center flex-shrink-0"><span class="iconify text-emerald-600 text-xl" data-icon="lucide:check"></span></div>
+      <div><p id="toastTitle" class="font-semibold text-gray-900 text-sm">Added to Cart</p><p id="toastMsg" class="text-xs text-gray-400">Item has been added</p></div>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT -->
+  <script>
+    const menuItems = [
+      { id:1, name:'Caesar Salad Bowl', price:14.99, cat:'salads', img:'https://images.unsplash.com/photo-1546793665-c74683f339c1?w=400&h=300&fit=crop', desc:'Romaine, parmesan, croutons, caesar dressing', cal:320, popular:true },
+      { id:2, name:'Quinoa Power Bowl', price:16.99, cat:'salads', img:'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&h=300&fit=crop', desc:'Quinoa, chickpeas, avocado, tahini dressing', cal:410, popular:false },
+      { id:3, name:'Greek Salad', price:12.99, cat:'salads', img:'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=400&h=300&fit=crop', desc:'Feta, olives, tomatoes, cucumber, oregano', cal:280, popular:false },
+      { id:4, name:'Asian Sesame Salad', price:13.99, cat:'salads', img:'https://images.unsplash.com/photo-1607532941433-304659e8198a?w=400&h=300&fit=crop', desc:'Mixed greens, edamame, sesame ginger dressing', cal:300, popular:true },
+      { id:5, name:'Classic Beef Burger', price:15.99, cat:'burgers', img:'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400&h=300&fit=crop', desc:'Angus beef, cheddar, lettuce, tomato, special sauce', cal:650, popular:true },
+      { id:6, name:'Chicken Avocado Burger', price:16.99, cat:'burgers', img:'https://images.unsplash.com/photo-1606755962773-d324e0a13086?w=400&h=300&fit=crop', desc:'Grilled chicken, avocado, sriracha mayo', cal:520, popular:false },
+      { id:7, name:'Veggie Supreme Burger', price:14.99, cat:'burgers', img:'https://images.unsplash.com/photo-1520072959219-c595e6cdc07e?w=400&h=300&fit=crop', desc:'Plant-based patty, all the fixings', cal:420, popular:false },
+      { id:8, name:'Double Smash Burger', price:18.99, cat:'burgers', img:'https://images.unsplash.com/photo-1586190848861-99aa4a171e90?w=400&h=300&fit=crop', desc:'Double smashed patties, American cheese', cal:780, popular:true },
+      { id:9, name:'Butter Croissant', price:4.99, cat:'bakery', img:'https://images.unsplash.com/photo-1555507036-ab1f4038024a?w=400&h=300&fit=crop', desc:'Flaky, buttery, freshly baked', cal:260, popular:true },
+      { id:10, name:'Chocolate Muffin', price:3.99, cat:'bakery', img:'https://images.unsplash.com/photo-1607958996333-41aef7caefaa?w=400&h=300&fit=crop', desc:'Rich double chocolate, moist center', cal:380, popular:false },
+      { id:11, name:'Sourdough Loaf', price:8.99, cat:'bakery', img:'https://images.unsplash.com/photo-1585478259715-876acc5be8eb?w=400&h=300&fit=crop', desc:'Artisan sourdough, 24hr ferment', cal:120, popular:false },
+      { id:12, name:'Cinnamon Roll', price:5.99, cat:'bakery', img:'https://images.unsplash.com/photo-1609126979532-7f6b1e9ee708?w=400&h=300&fit=crop', desc:'Warm, gooey, cream cheese glaze', cal:450, popular:true },
+      { id:13, name:'Berry Smoothie', price:7.99, cat:'drinks', img:'https://images.unsplash.com/photo-1553530666-ba11a7da3888?w=400&h=300&fit=crop', desc:'Mixed berries, banana, almond milk', cal:220, popular:false },
+      { id:14, name:'Green Detox Juice', price:8.99, cat:'drinks', img:'https://images.unsplash.com/photo-1610970881699-44a5587cabec?w=400&h=300&fit=crop', desc:'Kale, spinach, apple, ginger, lemon', cal:150, popular:true },
+      { id:15, name:'Mango Lassi', price:6.99, cat:'drinks', img:'https://images.unsplash.com/photo-1527661591475-527312dd65f5?w=400&h=300&fit=crop', desc:'Fresh mango, yogurt, cardamom', cal:280, popular:false },
+      { id:16, name:'Iced Matcha Latte', price:6.99, cat:'coffee', img:'https://images.unsplash.com/photo-1536256263959-770b48d82b0a?w=400&h=300&fit=crop', desc:'Ceremonial grade matcha, oat milk', cal:180, popular:true },
+      { id:17, name:'Cappuccino', price:5.49, cat:'coffee', img:'https://images.unsplash.com/photo-1572442388796-11668a67e53d?w=400&h=300&fit=crop', desc:'Double shot, velvety foam', cal:120, popular:false },
+      { id:18, name:'Caramel Latte', price:6.49, cat:'coffee', img:'https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=400&h=300&fit=crop', desc:'Espresso, steamed milk, caramel drizzle', cal:250, popular:true },
+      { id:19, name:'Cold Brew', price:5.99, cat:'coffee', img:'https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=400&h=300&fit=crop&crop=top', desc:'20hr steeped, smooth & bold', cal:100, popular:false },
+      { id:20, name:'Almond Croissant', price:5.99, cat:'bakery', img:'https://images.unsplash.com/photo-1629978324561-97ad8e8b4c98?w=400&h=300&fit=crop', desc:'Filled with almond cream, toasted almonds', cal:340, popular:true },
+    ];
+
+    let cart = [];
+    let currentFilter = 'all';
+    let promoApplied = false;
+
+    function renderMenu(filter = 'all') {
+      const grid = document.getElementById('menuGrid');
+      const filtered = filter === 'all' ? menuItems : menuItems.filter(i => i.cat === filter);
+      grid.innerHTML = filtered.map(item => `
+        <div class="bg-white rounded-3xl overflow-hidden shadow-sm border border-gray-100 card-hover group" data-cat="${item.cat}">
+          <div class="relative h-48 overflow-hidden">
+            <img src="${item.img}" alt="${item.name}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" loading="lazy">
+            ${item.popular ? '<span class="absolute top-3 left-3 bg-warm-500 text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg shadow">Popular</span>' : ''}
+            <span class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm text-gray-600 text-[10px] font-medium px-2 py-1 rounded-lg">${item.cal} cal</span>
+          </div>
+          <div class="p-5">
+            <h3 class="font-bold text-gray-900 mb-1">${item.name}</h3>
+            <p class="text-xs text-gray-400 mb-4 line-clamp-2">${item.desc}</p>
+            <div class="flex items-center justify-between">
+              <span class="text-xl font-extrabold text-emerald-600">$${item.price.toFixed(2)}</span>
+              <button onclick="addToCart(${item.id})" class="flex items-center gap-1.5 bg-emerald-50 hover:bg-emerald-600 text-emerald-700 hover:text-white font-semibold text-sm px-4 py-2.5 rounded-xl transition-all duration-200">
+                <span class="iconify text-base" data-icon="lucide:plus"></span>Add
+              </button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function filterMenu(cat) {
+      currentFilter = cat;
+      renderMenu(cat);
+      document.querySelectorAll('.filter-btn').forEach(b => { b.classList.remove('bg-emerald-600','text-white'); b.classList.add('bg-gray-100','text-gray-600'); });
+      const labels = {all:'All',salads:'Salads',burgers:'Burgers',bakery:'Bakery',drinks:'Drinks',coffee:'Coffee'};
+      const activeBtn = [...document.querySelectorAll('.filter-btn')].find(b => b.textContent.trim() === labels[cat]);
+      if(activeBtn) { activeBtn.classList.add('bg-emerald-600','text-white'); activeBtn.classList.remove('bg-gray-100','text-gray-600'); }
+    }
+
+    function addToCart(id) {
+      const item = menuItems.find(i => i.id === id);
+      const existing = cart.find(c => c.id === id);
+      if(existing) existing.qty++; else cart.push({...item, qty:1});
+      updateCartUI();
+      showToast('Added to Cart', item.name + ' added');
+      const badge = document.getElementById('cartBadge');
+      badge.classList.add('cart-pop'); setTimeout(() => badge.classList.remove('cart-pop'), 300);
+    }
+
+    function removeFromCart(id) { cart = cart.filter(c => c.id !== id); updateCartUI(); }
+    function changeQty(id, delta) { const item = cart.find(c => c.id === id); if(item) { item.qty += delta; if(item.qty <= 0) removeFromCart(id); else updateCartUI(); } }
+
+    function updateCartUI() {
+      const totalItems = cart.reduce((s,c) => s + c.qty, 0);
+      const subtotal = cart.reduce((s,c) => s + c.price * c.qty, 0);
+      const delivery = subtotal >= 30 ? 0 : 4.99;
+      const discount = promoApplied ? subtotal * 0.2 : 0;
+      const total = subtotal - discount + delivery;
+      const badge = document.getElementById('cartBadge');
+      if(totalItems > 0) { badge.classList.remove('hidden'); badge.classList.add('flex'); badge.textContent = totalItems; }
+      else { badge.classList.add('hidden'); badge.classList.remove('flex'); }
+      document.getElementById('cartCount').textContent = totalItems + ' item' + (totalItems !== 1 ? 's' : '');
+      const container = document.getElementById('cartItems'), footer = document.getElementById('cartFooter');
+      if(cart.length === 0) {
+        container.innerHTML = '<div class="flex flex-col items-center justify-center h-full text-center"><div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-4"><span class="iconify text-gray-300 text-4xl" data-icon="lucide:shopping-bag"></span></div><p class="font-semibold text-gray-400 mb-1">Your cart is empty</p><p class="text-sm text-gray-300">Add some delicious items!</p></div>';
+        footer.classList.add('hidden');
+      } else {
+        container.innerHTML = cart.map(c => `<div class="flex gap-4 bg-gray-50 rounded-2xl p-3"><img src="${c.img}" class="w-16 h-16 rounded-xl object-cover flex-shrink-0" alt=""><div class="flex-1 min-w-0"><p class="font-semibold text-gray-900 text-sm truncate">${c.name}</p><p class="text-emerald-600 font-bold text-sm mt-0.5">$${(c.price*c.qty).toFixed(2)}</p><div class="flex items-center gap-2 mt-2"><button onclick="changeQty(${c.id},-1)" class="w-7 h-7 bg-white rounded-lg flex items-center justify-center border border-gray-200 hover:border-emerald-300 transition-colors"><span class="iconify text-gray-500 text-xs" data-icon="lucide:minus"></span></button><span class="text-sm font-semibold w-5 text-center">${c.qty}</span><button onclick="changeQty(${c.id},1)" class="w-7 h-7 bg-white rounded-lg flex items-center justify-center border border-gray-200 hover:border-emerald-300 transition-colors"><span class="iconify text-gray-500 text-xs" data-icon="lucide:plus"></span></button></div></div><button onclick="removeFromCart(${c.id})" class="p-1.5 hover:bg-red-50 rounded-lg self-start transition-colors"><span class="iconify text-gray-300 hover:text-red-500 text-sm" data-icon="lucide:trash-2"></span></button></div>`).join('');
+        footer.classList.remove('hidden');
+        document.getElementById('cartSubtotal').textContent = '$' + (subtotal - discount).toFixed(2);
+        if(promoApplied) document.getElementById('cartSubtotal').innerHTML = '$' + (subtotal - discount).toFixed(2) + ' <span class="text-xs text-red-500 line-through ml-1">$' + subtotal.toFixed(2) + '</span>';
+        document.getElementById('cartDelivery').textContent = delivery === 0 ? 'Free' : '$' + delivery.toFixed(2);
+        document.getElementById('cartDelivery').className = delivery === 0 ? 'font-medium text-emerald-600' : 'font-medium';
+        document.getElementById('cartTotal').textContent = '$' + total.toFixed(2);
+      }
+    }
+
+    function toggleCart() {
+      const s = document.getElementById('cartSidebar'), o = document.getElementById('cartOverlay');
+      if(!s.classList.contains('translate-x-full')) { s.classList.add('translate-x-full'); o.classList.add('hidden'); document.body.style.overflow = ''; }
+      else { s.classList.remove('translate-x-full'); o.classList.remove('hidden'); document.body.style.overflow = 'hidden'; }
+    }
+
+    function applyPromo() {
+      const code = document.getElementById('promoInput').value.trim().toUpperCase();
+      if(code === 'ZOCHA20') { promoApplied = true; updateCartUI(); showToast('Promo Applied! 🎉', '20% discount added'); }
+      else showToast('Invalid Code', 'Try ZOCHA20 for 20% off', 'error');
+    }
+
+    function openCheckout() { if(!cart.length) return; toggleCart(); setTimeout(() => { document.getElementById('checkoutModal').classList.remove('hidden'); document.body.style.overflow = 'hidden'; goToStep(1); }, 300); }
+    function closeCheckout() { document.getElementById('checkoutModal').classList.add('hidden'); document.body.style.overflow = ''; }
+    function goToStep(s) { document.getElementById('checkoutStep1').classList.toggle('hidden', s !== 1); document.getElementById('checkoutStep2').classList.toggle('hidden', s !== 2); }
+
+    document.querySelectorAll('input[name="payment"]').forEach(r => {
+      r.addEventListener('change', e => {
+        document.getElementById('cardFields').style.display = e.target.value === 'card' ? 'block' : 'none';
+        document.querySelectorAll('input[name="payment"]').forEach(r => r.closest('label').className = 'flex items-center gap-4 p-4 rounded-2xl border-2 border-gray-200 cursor-pointer hover:border-emerald-300 transition-colors');
+        e.target.closest('label').className = 'flex items-center gap-4 p-4 rounded-2xl border-2 border-emerald-500 bg-emerald-50 cursor-pointer';
+      });
+    });
+
+    function placeOrder() {
+      closeCheckout();
+      document.getElementById('orderNumber').textContent = 'ZC-' + Math.floor(1000 + Math.random() * 9000);
+      document.getElementById('successModal').classList.remove('hidden'); document.body.style.overflow = 'hidden';
+      cart = []; promoApplied = false; updateCartUI(); animateTracker();
+    }
+    function closeSuccess() { document.getElementById('successModal').classList.add('hidden'); document.body.style.overflow = ''; }
+    function processPayment() { showToast('Demo Mode', 'Add items to cart to checkout'); }
+
+    function animateTracker() {
+      const steps = [{el:'track1',p:25},{el:'track2',p:50},{el:'track3',p:75},{el:'track4',p:100}];
+      let i = 0;
+      function next() {
+        if(i >= steps.length) return;
+        const s = steps[i], el = document.getElementById(s.el);
+        el.className = 'track-step bg-white rounded-2xl p-5 border-2 border-emerald-500 shadow-lg shadow-emerald-500/10 transition-all duration-500';
+        el.querySelector('.w-8').className = 'w-8 h-8 bg-emerald-500 rounded-lg flex items-center justify-center';
+        el.querySelectorAll('.iconify').forEach(ic => { if(ic.classList.contains('text-gray-400')) { ic.classList.remove('text-gray-400'); ic.classList.add('text-white'); } });
+        el.querySelector('.font-bold').className = 'font-bold text-emerald-700 text-sm';
+        el.lastElementChild.className = 'text-xs text-gray-400';
+        document.getElementById('trackProgress').style.width = s.p + '%';
+        i++; if(i < steps.length) setTimeout(next, 1200);
+      }
+      next();
+    }
+
+    const aiResponses = {
+      recommend: "Here are my top picks today! 🌟\n\n🥗 **Quinoa Power Bowl** — $16.99\nOur most nutritious option!\n\n🍔 **Classic Beef Burger** — $15.99\nCustomer favorite!\n\n☕ **Caramel Latte** — $6.49\nPerfect with any meal\n\n**Pro tip:** Order any bowl + drink combo for free delivery!",
+      delivery: "📦 **Delivery Information**\n\n⏱️ **Time:** 25-35 minutes average\n🆓 **Free delivery** on orders $30+\n💰 **Delivery fee:** $4.99 under $30\n🗺️ **Area:** 10km radius from our kitchen\n\nWe use real-time GPS tracking!",
+      vegan: "🌱 **Vegan Options:**\n\n🥗 Quinoa Power Bowl — $16.99\n🥗 Asian Sesame Salad — $13.99\n🍔 Veggie Supreme Burger — $14.99\n🥤 Berry Smoothie — $7.99\n🥤 Green Detox Juice — $8.99\n☕ Matcha Latte — $6.99\n\nAll clearly marked on our menu! 😊",
+      promo: "🏷️ **Current Promo Codes:**\n\n🔥 **ZOCHA20** — 20% off first order\n🚚 **FREEDEL** — Free delivery\n🎁 **BOGO** — Buy 1 Get 1 bakery\n\nJust enter at checkout!",
+      default: "Great question! I can help with:\n\n🍽️ Menu recommendations\n📦 Delivery info & tracking\n🌱 Dietary options\n🏷️ Promo codes & discounts\n💳 Payment methods\n⏰ Opening hours: 6AM - 11PM\n\nJust ask away! 😊"
+    };
+
+    function getAIResponse(msg) {
+      const m = msg.toLowerCase();
+      if(m.includes('recommend')||m.includes('suggest')||m.includes('best')||m.includes('popular')) return aiResponses.recommend;
+      if(m.includes('deliver')||m.includes('shipping')||m.includes('track')||m.includes('how long')) return aiResponses.delivery;
+      if(m.includes('vegan')||m.includes('plant')||m.includes('vegetarian')) return aiResponses.vegan;
+      if(m.includes('promo')||m.includes('code')||m.includes('discount')||m.includes('coupon')||m.includes('offer')) return aiResponses.promo;
+      if(m.includes('pay')||m.includes('card')||m.includes('cash')||m.includes('wallet')) return "💳 **Payment Methods:**\n\n✅ Credit/Debit Card\n✅ Digital Wallets\n✅ Cash on Delivery\n✅ Gift Cards & Promo Codes\n\nAll 256-bit SSL encrypted! 🔒";
+      if(m.includes('hour')||m.includes('open')||m.includes('close')||m.includes('time')) return "⏰ **Hours:**\n\nMonday - Sunday: **6:00 AM - 11:00 PM**\n\nWe never close during these hours! 😊";
+      if(m.includes('hello')||m.includes('hi')||m.includes('hey')) return "Hey there! 👋 Welcome to Zocha!\n\nI'm your AI assistant. How can I help you today?";
+      return aiResponses.default;
+    }
+
+    function formatAI(t) { return t.replace(/\*\*(.*?)\*\*/g,'<strong class="text-gray-900">$1</strong>').replace(/\n/g,'<br>'); }
+    function addAIMessage(text, isUser = false) {
+      const c = document.getElementById('aiMessages'), d = document.createElement('div');
+      d.className = isUser ? 'flex justify-end slide-in' : 'flex gap-3 slide-in';
+      d.innerHTML = isUser ? `<div class="bg-emerald-600 text-white px-4 py-2.5 rounded-2xl rounded-br-md max-w-[80%] text-sm">${text}</div>` : `<div class="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-1"><span class="iconify text-emerald-600 text-sm" data-icon="lucide:bot"></span></div><div class="bg-gray-100 text-gray-700 px-4 py-2.5 rounded-2xl rounded-bl-md max-w-[80%] text-sm leading-relaxed">${formatAI(text)}</div>`;
+      c.appendChild(d); c.scrollTop = c.scrollHeight;
+    }
+
+    function showTyping() {
+      const c = document.getElementById('aiMessages'), d = document.createElement('div');
+      d.id = 'typingIndicator'; d.className = 'flex gap-3 slide-in';
+      d.innerHTML = '<div class="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-1"><span class="iconify text-emerald-600 text-sm" data-icon="lucide:bot"></span></div><div class="bg-gray-100 px-4 py-3 rounded-2xl rounded-bl-md flex gap-1.5"><span class="w-2 h-2 bg-gray-400 rounded-full typing-dot"></span><span class="w-2 h-2 bg-gray-400 rounded-full typing-dot"></span><span class="w-2 h-2 bg-gray-400 rounded-full typing-dot"></span></div>';
+      c.appendChild(d); c.scrollTop = c.scrollHeight;
+    }
+
+    function sendAI() {
+      const input = document.getElementById('aiInput'), msg = input.value.trim();
+      if(!msg) return; addAIMessage(msg, true); input.value = ''; showTyping();
+      setTimeout(() => { document.getElementById('typingIndicator')?.remove(); addAIMessage(getAIResponse(msg)); }, 800 + Math.random() * 700);
+    }
+
+    function quickAI(msg) { document.getElementById('aiInput').value = msg; sendAI(); }
+
+    function toggleAI() {
+      const panel = document.getElementById('aiPanel'), overlay = document.getElementById('aiOverlay');
+      const isOpen = !panel.classList.contains('translate-y-[120%]');
+      if(isOpen) { panel.classList.add('translate-y-[120%]','scale-95'); overlay.classList.add('hidden'); document.body.style.overflow = ''; }
+      else { panel.classList.remove('translate-y-[120%]','scale-95'); overlay.classList.remove('hidden'); document.body.style.overflow = 'hidden';
+        if(!document.getElementById('aiMessages').children.length) setTimeout(() => addAIMessage("Hi there! 👋 I'm Zocha's AI assistant. I can help with menu recommendations, delivery info, dietary options, promo codes, and more. What would you like to know?"), 400);
+      }
+    }
+
+    function showToast(title, msg, type = 'success') {
+      const toast = document.getElementById('toast');
+      document.getElementById('toastTitle').textContent = title;
+      document.getElementById('toastMsg').textContent = msg;
+      const icon = document.getElementById('toastIcon');
+      icon.className = type === 'error' ? 'w-10 h-10 bg-red-100 rounded-xl flex items-center justify-center flex-shrink-0' : 'w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center flex-shrink-0';
+      icon.innerHTML = type === 'error' ? '<span class="iconify text-red-500 text-xl" data-icon="lucide:x"></span>' : '<span class="iconify text-emerald-600 text-xl" data-icon="lucide:check"></span>';
+      toast.classList.remove('translate-x-[120%]'); setTimeout(() => toast.classList.add('translate-x-[120%]'), 2500);
+    }
+
+    function toggleMobileMenu() { document.getElementById('mobileMenu').classList.toggle('hidden'); }
+    renderMenu('all');
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', e => { const t = document.querySelector(a.getAttribute('href')); if(t) { e.preventDefault(); t.scrollIntoView({behavior:'smooth',block:'start'}); } });
+    });
+  </script>
+</body>
+</html>
